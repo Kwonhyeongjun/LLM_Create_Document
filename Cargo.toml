@@ -1,0 +1,13 @@
+[package]
+name = "ws_upgrade"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bytes = "1"
+httparse = "1"
+sha1 = "0.10"
+base64 = "0.22"
+log = "0.4"
+fastwebsockets = "0.10.0"
+

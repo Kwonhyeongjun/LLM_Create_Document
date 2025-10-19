@@ -1,0 +1,57 @@
+use std::thread;
+use crossbeam_channel;
+
+fn main() -> Result<(), _> {
+    let mut ingress_vec: Vec<(Sender, Reciever)> = Vec::new();
+    for i in 0..NUM_IO_THREAD {
+        let (tx, rx) = bounded(1024);
+        ingress_vec.push((tx, rx));
+    }
+    
+    let mut egress_vec: Vec<(Sender, Reciever)> = Vec::new();
+    for i in 0..NUM_IO_THREAD {
+        let (tx, rx) = bounded(1024);
+        egress_vec.push((tx, rx));
+    }
+    
+    // IO worker
+    for i in 0..NUM_IO_THREAD {
+        let ingress_tx = ingress_vec[i].0.clone();
+        let egress_rx = egress_vec[i].1.clone();
+        thread::spawn(|move| spawn_io_worker(ingress_tx, egress_rx, i));
+    }
+    
+    let (inference_tx, inference_rx) = bounded(1024);
+    let (dict_tx, dict_rx) = bounded(1024);
+    let (cefr_tx, cefr_rx) = bounded(1024);
+    let (bg_tx, bg_rx) = bounded(1024);
+    
+    // parser worker
+    for i in 0..NUM_IO_THREAD {
+        let ingress_rx = ingress_vec[i].1.clone();
+        let inference_tx = inference_tx.clone();
+        let dict_tx = dict_tx.clone();
+        let cefr_tx = cefr_tx.clone();
+        let bg_tx = bg_tx.clone();
+        thread::spawn(move || spawn_parser(
+                inference_tx,
+                dict_tx,
+                cefr_tx,
+                bg_tx,
+                ingress_rx
+            )
+        );
+    }
+    
+    // inference worker
+    for i in 0..NUM_GPU {
+        let inference_rx = inference_rx.clone();
+        let egress_tx_vec: Vec<Sender> = Vec::new();
+        for j in 0..NUM_IO_THREAD {
+            egress_tx_vec.push(egress_vec[j].1.clone());
+        }
+
+    }
+   
+
+
