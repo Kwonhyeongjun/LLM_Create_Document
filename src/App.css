@@ -1,0 +1,16 @@
+body {
+  font-family: "Source Sans", sans-serif;
+  margin: 0;
+  padding: 20px;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h2 {
+  font-size: 1.5em;
+}
