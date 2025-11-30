@@ -1,0 +1,13 @@
+.editor-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 0 40px;
+}
+
+.editor-title {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2b2d42;
+}
